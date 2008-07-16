@@ -553,7 +553,6 @@ static PHP_METHOD(SphinxClient, setGroupBy)
 	int attribute_len, groupsort_len, func, res;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl|s", &attribute, &attribute_len, &func, &groupsort, &groupsort_len) == FAILURE) {
-		printf("\nSetGroupBy: Parsing parameters ERROR!");
 		return;
 	}
 	
