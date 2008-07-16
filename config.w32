@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_WITH("sphinx", "for sphinx support", "yes");
+
+if (PHP_SPHINX == "yes") {
+	if (CHECK_LIB("libsphinxclient.lib", "sphinx_create") &&
+			CHECK_HEADER_ADD_INCLUDE("sphinxclient.h", "CFLAGS_SPHINX")) {
+
+		EXTENSION("sphinx", "sphinx.c");
+	}
+}
+
