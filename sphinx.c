@@ -110,12 +110,12 @@ static HashTable *php_sphinx_client_get_properties(zval *object TSRMLS_DC) /* {{
 
 	error = sphinx_error(c->sphinx);
 	MAKE_STD_ZVAL(tmp);
-	ZVAL_STRING(tmp, error, 1);
+	ZVAL_STRING(tmp, (char *)error, 1);
 	zend_hash_update(c->std.properties, "error", sizeof("error"), (void *)&tmp, sizeof(zval *), NULL);
 
 	warning = sphinx_warning(c->sphinx);
 	MAKE_STD_ZVAL(tmp);
-	ZVAL_STRING(tmp, warning, 1);
+	ZVAL_STRING(tmp, (char *)warning, 1);
 	zend_hash_update(c->std.properties, "warning", sizeof("warning"), (void *)&tmp, sizeof(zval *), NULL);
 	return c->std.properties;
 }
@@ -257,7 +257,7 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 
 			add_assoc_long_ex(sub_element, "docs", sizeof("docs"), result->words[i].docs);
 			add_assoc_long_ex(sub_element, "hits", sizeof("hits"), result->words[i].hits);
-			add_assoc_zval_ex(tmp, result->words[i].word, strlen(result->words[i].word) + 1, sub_element);
+			add_assoc_zval_ex(tmp, (char *)result->words[i].word, strlen(result->words[i].word) + 1, sub_element);
 		}
 		add_assoc_zval_ex(*array, "words", sizeof("words"), tmp);
 	}
@@ -1117,7 +1117,7 @@ static PHP_METHOD(SphinxClient, getLastWarning)
 	if (!warning || !warning[0]) {
 		RETURN_EMPTY_STRING();
 	}
-	RETURN_STRING(warning, 1);
+	RETURN_STRING((char *)warning, 1);
 }
 /* }}} */
 
@@ -1133,7 +1133,7 @@ static PHP_METHOD(SphinxClient, getLastError)
 	if (!error || !error[0]) {
 		RETURN_EMPTY_STRING();
 	}
-	RETURN_STRING(error, 1);
+	RETURN_STRING((char *)error, 1);
 }
 /* }}} */
 
@@ -1371,7 +1371,7 @@ PHP_MINFO_FUNCTION(sphinx)
 }
 /* }}} */
 
-const zend_function_entry sphinx_functions[] = { /* {{{ */
+static zend_function_entry sphinx_functions[] = { /* {{{ */
 	{NULL, NULL, NULL}
 };
 /* }}} */
