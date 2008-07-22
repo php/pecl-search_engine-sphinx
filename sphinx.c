@@ -1162,7 +1162,7 @@ static PHP_METHOD(SphinxClient, query)
 
 /* }}} */
 
-/* {{{ proto bool SphinxClient::addQuery(string query[, string index[, string comment]]) */
+/* {{{ proto int SphinxClient::addQuery(string query[, string index[, string comment]]) */
 static PHP_METHOD(SphinxClient, addQuery)
 {
 	php_sphinx_client *c;
@@ -1177,10 +1177,10 @@ static PHP_METHOD(SphinxClient, addQuery)
 
 	res = sphinx_add_query(c->sphinx, query, index, comment);
 
-	if (!res) {
+	if (res < 0) {
 		RETURN_FALSE;
 	}
-	RETURN_TRUE;
+	RETURN_LONG(ret);
 }
 
 /* }}} */
