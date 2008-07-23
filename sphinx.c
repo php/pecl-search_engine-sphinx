@@ -305,20 +305,20 @@ static PHP_METHOD(SphinxClient, setServer)
 }
 /* }}} */
  
-/* {{{ proto bool SphinxClient::setLimits(int offset, int limit[, int max[, int cutoff]]) */
+/* {{{ proto bool SphinxClient::setLimits(int offset, int limit[, int max_matches[, int cutoff]]) */
 static PHP_METHOD(SphinxClient, setLimits)
 {
 	php_sphinx_client *c;
-	long offset, limit, max = 0, cutoff = 0;
+	long offset, limit, max_matches = 0, cutoff = 0;
 	int res;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|ll", &offset, &limit, &max, &cutoff) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll|ll", &offset, &limit, &max_matches, &cutoff) == FAILURE) {
 		return;
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
 
-	res = sphinx_set_limits(c->sphinx, (int)offset, (int)limit, (int)max, (int)cutoff);
+	res = sphinx_set_limits(c->sphinx, (int)offset, (int)limit, (int)max_matches, (int)cutoff);
 	if (!res) {
 		RETURN_FALSE;
 	}
