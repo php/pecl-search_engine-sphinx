@@ -1180,7 +1180,7 @@ static PHP_METHOD(SphinxClient, addQuery)
 	if (res < 0) {
 		RETURN_FALSE;
 	}
-	RETURN_LONG(ret);
+	RETURN_LONG(res);
 }
 
 /* }}} */
