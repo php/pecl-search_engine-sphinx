@@ -411,14 +411,14 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 }
 /* }}} */
 
-/* {{{ proto bool SphinxClient::setIDRange(float min, float max) */
+/* {{{ proto bool SphinxClient::setIDRange(int min, int max) */
 static PHP_METHOD(SphinxClient, setIDRange)
 {
 	php_sphinx_client *c;
-	double min, max;
+	long min, max;
 	int res;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dd", &min, &max) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ll", &min, &max) == FAILURE) {
 		return;
 	}
 
