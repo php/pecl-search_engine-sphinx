@@ -15,11 +15,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>tony2001@php.net</email>
   <active>yes</active>
  </lead>
- <date>2008-07-18</date>
- <time>19:00:00</time>
+ <date>2008-07-31</date>
+ <time>18:00:00</time>
  <version>
-  <release>0.1.0</release>
-  <api>0.1.0</api>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -27,7 +27,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
  <notes>
-  - Initial PECL release.
+- Updated SphinxClient::updateAttributes() to return number of updated attributes on success.
+- Updated SphinxClient::setIDRange() to accept integers.
+- Updated SphinxClient::addQuery() to return integer on success.
  </notes>
  <contents>
   <dir name="/">
@@ -54,4 +56,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <extsrcrelease>
   <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
  </extsrcrelease>
+ <changelog>
+  <date>2008-07-21</date>
+  <time>18:00:00</time>
+  <version>
+   <release>0.1.0</release>
+   <api>0.1.0</api>
+  </version>
+  <stability>
+   <release>beta</release>
+   <api>beta</api>
+  </stability>
+  <license uri="http://www.php.net/license">PHP</license>
+  <notes>
+   - Initial PECL release.
+  </notes>
+ </changelog>
 </package>
