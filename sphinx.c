@@ -785,7 +785,7 @@ static PHP_METHOD(SphinxClient, setArrayResult)
 }
 /* }}} */
 
-/* {{{ proto bool SphinxClient::updateAttributes(string index, array attributes, array values) */
+/* {{{ proto int SphinxClient::updateAttributes(string index, array attributes, array values) */
 static PHP_METHOD(SphinxClient, updateAttributes)
 {
 	php_sphinx_client *c;
@@ -886,10 +886,10 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 
 	res = sphinx_update_attributes(c->sphinx, index, (int)attrs_num, attrs, values_num, docids, vals); 
 
-	if (!res) {
+	if (res < 0) {
 		RETVAL_FALSE;
 	} else {
-		RETVAL_TRUE;
+		RETVAL_LONG(res);
 	}
 
 cleanup:
