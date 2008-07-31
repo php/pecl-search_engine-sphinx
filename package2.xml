@@ -16,7 +16,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <active>yes</active>
  </lead>
  <date>2008-07-31</date>
- <time>18:00:00</time>
+ <time>17:00:00</time>
  <version>
   <release>0.2.0</release>
   <api>0.2.0</api>
@@ -28,7 +28,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://www.php.net/license">PHP</license>
  <notes>
 - Updated SphinxClient::updateAttributes() to return number of updated attributes on success.
-- Updated SphinxClient::setIDRange() to accept integers.
+- Updated SphinxClient::setIDRange() to accept integers, not floats.
 - Updated SphinxClient::addQuery() to return integer on success.
  </notes>
  <contents>
