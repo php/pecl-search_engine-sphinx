@@ -1259,6 +1259,20 @@ static PHP_METHOD(SphinxClient, escapeString)
 }
 /* }}} */
 
+/* {{{ proto int SphinxClient::__sleep() */
+static PHP_METHOD(SphinxClient, __sleep)
+{
+	php_error_docref(NULL TSRMLS_CC, E_RECOVERABLE_ERROR, "SphinxClient instance cannot be (un)serialized");
+}
+/* }}} */
+
+/* {{{ proto int SphinxClient::__wakeup() */
+static PHP_METHOD(SphinxClient, __wakeup)
+{
+	php_error_docref(NULL TSRMLS_CC, E_RECOVERABLE_ERROR, "SphinxClient instance cannot be (un)serialized");
+}
+/* }}} */
+
 /* {{{ arginfo */
 static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setserver, 0, 0, 2)
@@ -1427,6 +1441,8 @@ static zend_function_entry sphinx_client_methods[] = { /* {{{ */
 	PHP_ME(SphinxClient, setServer, 			arginfo_sphinxclient_setserver, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setSortMode, 			arginfo_sphinxclient_setsortmode, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, updateAttributes, 		arginfo_sphinxclient_updateattributes, ZEND_ACC_PUBLIC)
+	PHP_ME(SphinxClient, __sleep,				NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(SphinxClient, __wakeup,				NULL, ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	{NULL, NULL, NULL}
 };
 /* }}} */

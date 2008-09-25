@@ -27,6 +27,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
  <notes>
+- Added __sleep() and __wakeup() methods to prevent (un)serialization of SphinxClient instances.
 - Updated SphinxClient::updateAttributes() to return number of updated attributes on success.
 - Updated SphinxClient::setIDRange() to accept integers, not floats.
 - Updated SphinxClient::addQuery() to return integer on success.
