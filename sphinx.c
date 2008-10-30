@@ -1274,13 +1274,11 @@ static PHP_METHOD(SphinxClient, __wakeup)
 /* }}} */
 
 /* {{{ arginfo */
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setserver, 0, 0, 2)
 	ZEND_ARG_INFO(0, server)
 	ZEND_ARG_INFO(0, port)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setlimits, 0, 0, 2)
 	ZEND_ARG_INFO(0, offset)
 	ZEND_ARG_INFO(0, limit)
@@ -1288,30 +1286,25 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setlimits, 0, 0, 2)
 	ZEND_ARG_INFO(0, cutoff)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setmatchmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, mode)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setindexweights, 0, 0, 1)
 	ZEND_ARG_INFO(0, weights)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setidrange, 0, 0, 2)
 	ZEND_ARG_INFO(0, min)
 	ZEND_ARG_INFO(0, max)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilter, 0, 0, 2)
 	ZEND_ARG_INFO(0, attribute)
 	ZEND_ARG_INFO(0, values)
 	ZEND_ARG_INFO(0, exclude)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilterrange, 0, 0, 3)
 	ZEND_ARG_INFO(0, attribute)
 	ZEND_ARG_INFO(0, min)
@@ -1319,7 +1312,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilterrange, 0, 0, 3)
 	ZEND_ARG_INFO(0, exclude)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setgeoanchor, 0, 0, 4)
 	ZEND_ARG_INFO(0, attrlat)
 	ZEND_ARG_INFO(0, attrlong)
@@ -1327,58 +1319,48 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setgeoanchor, 0, 0, 4)
 	ZEND_ARG_INFO(0, longitude)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setgroupby, 0, 0, 2)
 	ZEND_ARG_INFO(0, attribute)
 	ZEND_ARG_INFO(0, func)
 	ZEND_ARG_INFO(0, groupsort)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setgroupdistinct, 0, 0, 1)
 	ZEND_ARG_INFO(0, attribute)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setretries, 0, 0, 1)
 	ZEND_ARG_INFO(0, count)
 	ZEND_ARG_INFO(0, delay)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setmaxquerytime, 0, 0, 1)
 	ZEND_ARG_INFO(0, qtime)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setrankingmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, ranker)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setsortmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, mode)
 	ZEND_ARG_INFO(0, sortby)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setconnecttimeout, 0, 0, 1)
 	ZEND_ARG_INFO(0, timeout)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setarrayresult, 0, 0, 1)
 	ZEND_ARG_INFO(0, array_result)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_updateattributes, 0, 0, 3)
 	ZEND_ARG_INFO(0, index)
 	ZEND_ARG_INFO(0, attributes)
 	ZEND_ARG_INFO(0, values)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_buildexcerpts, 0, 0, 3)
 	ZEND_ARG_INFO(0, docs)
 	ZEND_ARG_INFO(0, index)
@@ -1386,25 +1368,21 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_buildexcerpts, 0, 0, 3)
 	ZEND_ARG_INFO(0, opts)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_buildkeywords, 0, 0, 3)
 	ZEND_ARG_INFO(0, query)
 	ZEND_ARG_INFO(0, index)
 	ZEND_ARG_INFO(0, hits)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_query, 0, 0, 1)
 	ZEND_ARG_INFO(0, query)
 	ZEND_ARG_INFO(0, index)
 	ZEND_ARG_INFO(0, comment)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO(arginfo_sphinxclient__param_void, 0)
 ZEND_END_ARG_INFO()
 
-static
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_escapestring, 0, 0, 1)
 	ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
