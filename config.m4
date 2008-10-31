@@ -41,7 +41,7 @@ if test "$PHP_SPHINX" != "no"; then
   ],[
     AC_MSG_ERROR([wrong libsphinxclient version or lib not found])
   ],[
-    -L$SPHINX_DIR/$PHP_LIBDIR -lm -ldl
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
   
   PHP_SUBST(SPHINX_SHARED_LIBADD)
