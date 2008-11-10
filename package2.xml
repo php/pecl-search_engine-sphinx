@@ -31,6 +31,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Updated SphinxClient::updateAttributes() to return number of updated attributes on success.
 - Updated SphinxClient::setIDRange() to accept integers, not floats.
 - Updated SphinxClient::addQuery() to return integer on success.
+- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids)
  </notes>
  <contents>
   <dir name="/">
