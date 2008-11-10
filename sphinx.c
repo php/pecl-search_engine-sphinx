@@ -27,6 +27,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "ext/standard/file.h"
+#include "zend_operators.h"
 #include "php_sphinx.h"
 
 #include <sphinxclient.h>
@@ -189,7 +190,16 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 
 			if (c->array_result) {
 				/* id */
+#if SIZEOF_LONG == 8
 				add_assoc_long_ex(tmp_element, "id", sizeof("id"), sphinx_get_id(result, i));
+#else
+				float float_id;
+				char buf[128];
+
+				float_id = (float)sphinx_get_id(result, i);
+				sprintf(buf, "%.0f", float_id);
+				add_assoc_string_ex(tmp_element, "id", sizeof("id"), buf, 1);
+#endif
 			}
 
 			/* weight */
@@ -231,7 +241,17 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 			if (c->array_result) {
 				add_next_index_zval(tmp, tmp_element);
 			} else {
+#if SIZEOF_LONG == 8
 				add_index_zval(tmp, sphinx_get_id(result, i), tmp_element);
+#else
+				char buf[128];
+				float float_id;
+				int buf_len;
+
+				float_id = (float)sphinx_get_id(result, i);
+				buf_len = sprintf(buf, "%.0f", float_id);
+				add_assoc_zval_ex(tmp, buf, buf_len + 1, tmp_element);
+#endif
 			}
 		}
 
@@ -839,10 +859,13 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	for (zend_hash_internal_pointer_reset(Z_ARRVAL_P(values));
 		 zend_hash_get_current_data(Z_ARRVAL_P(values), (void **) &item) != FAILURE;
 		 zend_hash_move_forward(Z_ARRVAL_P(values))) {
-		char *dummy;
+		char *str_id;
 		ulong id;
 		zval **attr_value;
-		int failed = 0;
+		int failed = 0, key_type;
+		uint str_id_len;
+		double float_id = 0;
+		unsigned char id_type;
 
 		if (Z_TYPE_PP(item) != IS_ARRAY) {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "value is not an array of attributes");
@@ -854,7 +877,20 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 			break;
 		}
 
-		if (zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &dummy, NULL, &id, 0, NULL) != HASH_KEY_IS_LONG) {
+		key_type = zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &str_id, &str_id_len, &id, 0, NULL);
+
+		if (key_type == HASH_KEY_IS_LONG) {
+			/* ok */
+			id_type = IS_LONG;
+		} else if (key_type == HASH_KEY_IS_STRING) {
+			id_type = is_numeric_string(str_id, str_id_len, (long *)&id, &float_id, 0);
+			if (id_type == IS_LONG || id_type == IS_DOUBLE) {
+				/* ok */
+			} else {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "document ID must be numeric");
+				break;
+			}
+		} else {
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "document ID must be integer");
 			break;
 		}
@@ -875,7 +911,11 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 			break;
 		}
 
-		docids[i] = (sphinx_uint64_t)id;
+		if (id_type == IS_LONG) {
+			docids[i] = (sphinx_uint64_t)id;
+		} else { /* IS_FLOAT */
+			docids[i] = (sphinx_uint64_t)float_id;
+		}
 		i++;
 	}
 
