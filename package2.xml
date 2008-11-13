@@ -32,7 +32,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Updated SphinxClient::setIDRange() to accept integers, not floats.
 - Updated SphinxClient::addQuery() to return integer on success.
 - Fixed PECL bug #14930 (configure fails on freebsd). (patch by nobleclem at fatalexception dot us)
-- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids)
+- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids). (nobleclem at fatalexception dot us, Tony)
  </notes>
  <contents>
   <dir name="/">
