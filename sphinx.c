@@ -175,7 +175,16 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 	array_init(tmp);
 
 	for (i = 0; i < result->num_attrs; i++) {
+#if SIZEOF_LONG == 8
 		add_assoc_long_ex(tmp, result->attr_names[i], strlen(result->attr_names[i]) + 1, result->attr_types[i]);
+#else
+		double float_value;
+		char buf[128];
+
+		float_value = (double)result->attr_types[i];
+		slprintf(buf, sizeof(buf), "%.0f", float_value);
+		add_assoc_string_ex(tmp, result->attr_names[i], strlen(result->attr_names[i]) + 1, buf, 1);
+#endif
 	}
 	add_assoc_zval_ex(*array, "attrs", sizeof("attrs"), tmp);
 
@@ -193,11 +202,11 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 #if SIZEOF_LONG == 8
 				add_assoc_long_ex(tmp_element, "id", sizeof("id"), sphinx_get_id(result, i));
 #else
-				float float_id;
+				double float_id;
 				char buf[128];
 
-				float_id = (float)sphinx_get_id(result, i);
-				sprintf(buf, "%.0f", float_id);
+				float_id = (double)sphinx_get_id(result, i);
+				slprintf(buf, sizeof(buf), "%.0f", float_id);
 				add_assoc_string_ex(tmp_element, "id", sizeof("id"), buf, 1);
 #endif
 			}
@@ -211,6 +220,8 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 
 			for (j = 0; j < result->num_attrs; j++) {
 				MAKE_STD_ZVAL(sub_sub_element);
+				double float_value;
+				char buf[128];
 
 				switch(result->attr_types[j]) {
 					case SPH_ATTR_MULTI | SPH_ATTR_INTEGER:
@@ -221,7 +232,13 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 							array_init(sub_sub_element);
 
 							for (k = 1; mva && k <= mva[0]; k++) {
+#if SIZEOF_LONG == 8
 								add_next_index_long(sub_sub_element, mva[k]);
+#else
+								float_value = (double)mva[k];
+								slprintf(buf, sizeof(buf), "%.0f", float_value);
+								add_next_index_string(sub_sub_element, buf, 1);
+#endif
 							}
 						}	break;
 
@@ -229,7 +246,13 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 						ZVAL_DOUBLE(sub_sub_element, sphinx_get_float(result, i, j));
 						break;
 					default:
+#if SIZEOF_LONG == 8
 						ZVAL_LONG(sub_sub_element, sphinx_get_int(result, i, j));
+#else
+						float_value = (double)sphinx_get_int(result, i, j);
+						slprintf(buf, sizeof(buf), "%.0f", float_value);
+						ZVAL_STRING(sub_sub_element, buf, 1);
+#endif
 						break;
 				}
 
@@ -245,11 +268,11 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 				add_index_zval(tmp, sphinx_get_id(result, i), tmp_element);
 #else
 				char buf[128];
-				float float_id;
+				double float_id;
 				int buf_len;
 
-				float_id = (float)sphinx_get_id(result, i);
-				buf_len = sprintf(buf, "%.0f", float_id);
+				float_id = (double)sphinx_get_id(result, i);
+				buf_len = slprintf(buf, sizeof(buf), "%.0f", float_id);
 				add_assoc_zval_ex(tmp, buf, buf_len + 1, tmp_element);
 #endif
 			}
