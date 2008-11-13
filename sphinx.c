@@ -219,9 +219,10 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 			array_init(sub_element);
 
 			for (j = 0; j < result->num_attrs; j++) {
-				MAKE_STD_ZVAL(sub_sub_element);
 				double float_value;
 				char buf[128];
+
+				MAKE_STD_ZVAL(sub_sub_element);
 
 				switch(result->attr_types[j]) {
 					case SPH_ATTR_MULTI | SPH_ATTR_INTEGER:
