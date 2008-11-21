@@ -229,14 +229,23 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 						{
 							int k;
 							unsigned int *mva = sphinx_get_mva(result, i, j);
+							unsigned int tmp, num;
 
 							array_init(sub_sub_element);
 
-							for (k = 1; mva && k <= mva[0]; k++) {
+							if (!mva) {
+								break;
+							}
+
+							memcpy(&num, mva, sizeof(unsigned int));
+
+							for (k = 1; k <= num; k++) {
+								mva++;
+								memcpy(&tmp, mva, sizeof(unsigned int));
 #if SIZEOF_LONG == 8
-								add_next_index_long(sub_sub_element, mva[k]);
+								add_next_index_long(sub_sub_element, tmp);
 #else
-								float_value = (double)mva[k];
+								float_value = (double)tmp;
 								slprintf(buf, sizeof(buf), "%.0f", float_value);
 								add_next_index_string(sub_sub_element, buf, 1);
 #endif
