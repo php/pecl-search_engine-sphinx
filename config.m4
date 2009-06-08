@@ -44,6 +44,14 @@ if test "$PHP_SPHINX" != "no"; then
     -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
   
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_set_select,
+  [
+    PHP_ADD_LIBRARY_WITH_PATH($LIBNAME, $SPHINX_DIR/$PHP_LIBDIR, SPHINX_SHARED_LIBADD)
+    AC_DEFINE(HAVE_SPHINX_SET_SELECT,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])
+  
   PHP_SUBST(SPHINX_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(sphinx, sphinx.c, $ext_shared)

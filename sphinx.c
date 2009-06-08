@@ -464,6 +464,29 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 }
 /* }}} */
 
+#ifdef HAVE_SPHINX_SET_SELECT
+/* {{{ proto bool SphinxClient::setSelect(string clause) */
+static PHP_METHOD(SphinxClient, setSelect)
+{
+	php_sphinx_client *c;
+	char *clause;
+	int clause_len, res;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &clause, &clause_len) == FAILURE) {
+		return;
+	}
+
+	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	res = sphinx_set_select(c->sphinx, clause);
+	if (!res) {
+		RETURN_FALSE;
+	}
+	RETURN_TRUE;
+}
+/* }}} */
+#endif
+
 /* {{{ proto bool SphinxClient::setIDRange(int min, int max) */
 static PHP_METHOD(SphinxClient, setIDRange)
 {
@@ -1367,6 +1390,12 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setindexweights, 0, 0, 1)
 	ZEND_ARG_INFO(0, weights)
 ZEND_END_ARG_INFO()
 
+#ifdef HAVE_SPHINX_SET_SELECT
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setselect, 0, 0, 1)
+	ZEND_ARG_INFO(0, clause)
+ZEND_END_ARG_INFO()
+#endif
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setidrange, 0, 0, 2)
 	ZEND_ARG_INFO(0, min)
 	ZEND_ARG_INFO(0, max)
@@ -1484,6 +1513,9 @@ static zend_function_entry sphinx_client_methods[] = { /* {{{ */
 	PHP_ME(SphinxClient, setGroupDistinct, 		arginfo_sphinxclient_setgroupdistinct, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setIndexWeights, 		arginfo_sphinxclient_setindexweights, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setIDRange, 			arginfo_sphinxclient_setidrange, ZEND_ACC_PUBLIC)
+#ifdef HAVE_SPHINX_SET_SELECT
+	PHP_ME(SphinxClient, setSelect, 			arginfo_sphinxclient_setselect, ZEND_ACC_PUBLIC)
+#endif
 	PHP_ME(SphinxClient, setLimits, 			arginfo_sphinxclient_setlimits, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setMatchMode, 			arginfo_sphinxclient_setmatchmode, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setMaxQueryTime, 		arginfo_sphinxclient_setmaxquerytime, ZEND_ACC_PUBLIC)
