@@ -47,6 +47,10 @@ typedef struct _php_sphinx_client {
 ZEND_GET_MODULE(sphinx)
 #endif
 
+#ifndef E_RECOVERABLE_ERROR
+#define E_RECOVERABLE_ERROR E_WARNING
+#endif
+
 #define SPHINX_CONST(name) REGISTER_LONG_CONSTANT(#name, name, CONST_CS | CONST_PERSISTENT)
 
 static void php_sphinx_client_obj_dtor(void *object TSRMLS_DC) /* {{{ */
