@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.11" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>sphinx</name>
+ <channel>pecl.php.net</channel>
+ <summary>Client extension for Sphinx - opensource SQL full-text search engine</summary>
+ <description>
+  This extension provides bindings for libsphinxclient, client library for Sphinx.
+ </description>
+ <lead>
+  <name>Antony Dovgal</name>
+  <user>tony2001</user>
+  <email>tony2001@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2009-01-29</date>
+ <time>17:00:00</time>
+ <version>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP</license>
+ <notes>- Added __sleep() and __wakeup() methods to prevent (un)serialization of SphinxClient instances.
+- Fixed PECL bug #15033 (segfaults on SPARC because of unaligned read).
+- Fixed PECL bug #14930 (configure fails on freebsd). (patch by nobleclem at fatalexception dot us)
+- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids). (nobleclem at fatalexception dot us, Tony)
+ </notes>
+ <contents>
+  <dir name="/">
+   <file name="CREDITS" role="doc" />
+   <file name="config.m4" role="src" />
+   <file name="config.w32" role="src" />
+   <file name="sphinx.c" role="src" />
+   <file name="php_sphinx.h" role="src" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.2</min>
+    <max>6.0.0</max>
+    <exclude>6.0.0</exclude>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>sphinx</providesextension>
+ <extsrcrelease>
+  <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
+ </extsrcrelease>
+ <changelog>
+  <release>
+   <stability><release>beta</release><api>beta</api></stability>
+   <version><release>0.2.0</release><api>0.2.0</api></version>
+   <date>2008-07-31</date>
+   <notes>- Updated SphinxClient::updateAttributes() to return number of updated attributes on success.
+- Updated SphinxClient::setIDRange() to accept integers, not floats.
+- Updated SphinxClient::addQuery() to return integer on success.
+   </notes>
+  </release>
+  <release>
+   <stability><release>beta</release><api>beta</api></stability>
+   <version><release>0.1.0</release><api>0.1.0</api></version>
+   <date>2008-07-21</date>
+   <notes>- Initial PECL release.
+   </notes>
+  </release>
+ </changelog>
+</package>
