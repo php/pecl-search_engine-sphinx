@@ -32,7 +32,7 @@ extern zend_module_entry sphinx_module_entry;
 PHP_MINIT_FUNCTION(sphinx);
 PHP_MINFO_FUNCTION(sphinx);
 
-#define PHP_SPHINX_VERSION "1.0.0"
+#define PHP_SPHINX_VERSION "1.0.1"
 
 #endif	/* PHP_SPHINX_H */
 

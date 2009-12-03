@@ -15,21 +15,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>tony2001@php.net</email>
   <active>yes</active>
  </lead>
- <date>2009-01-29</date>
- <time>17:00:00</time>
+ <date>2009-12-03</date>
+ <time>16:00:00</time>
  <version>
-  <release>1.0.0</release>
-  <api>1.0.0</api>
+  <release>1.0.1</release>
+  <api>1.0.1</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
- <notes>- Added __sleep() and __wakeup() methods to prevent (un)serialization of SphinxClient instances.
-- Fixed PECL bug #15033 (segfaults on SPARC because of unaligned read).
-- Fixed PECL bug #14930 (configure fails on freebsd). (patch by nobleclem at fatalexception dot us)
-- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids). (nobleclem at fatalexception dot us, Tony)
+ <notes>- Fixed build failure with PHP 5.1.x.
+- Added support for setSelect(), available in sphinx 0.9.9 new API (patch by Olivier Poitrey)
  </notes>
  <contents>
   <dir name="/">
@@ -57,6 +55,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
  </extsrcrelease>
  <changelog>
+  <release>
+   <stability><release>stable</release><api>stable</api></stability>
+   <version><release>1.0.0</release><api>1.0.0</api></version>
+   <date>2009-01-29</date>
+   <notes>- Added __sleep() and __wakeup() methods to prevent (un)serialization of SphinxClient instances.
+- Fixed PECL bug #15033 (segfaults on SPARC because of unaligned read).
+- Fixed PECL bug #14930 (configure fails on freebsd). (patch by nobleclem at fatalexception dot us)
+- Fixed PECL bug #14752 (32-bit Client does not work with 64-bit ids). (nobleclem at fatalexception dot us, Tony)
+   </notes>
+  </release>
   <release>
    <stability><release>beta</release><api>beta</api></stability>
    <version><release>0.2.0</release><api>0.2.0</api></version>
