@@ -16,18 +16,17 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <active>yes</active>
  </lead>
  <date>2009-12-03</date>
- <time>16:00:00</time>
+ <time>17:00:00</time>
  <version>
-  <release>1.0.1</release>
-  <api>1.0.1</api>
+  <release>1.0.2</release>
+  <api>1.0.2</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
- <notes>- Fixed build failure with PHP 5.1.x.
-- Added support for setSelect(), available in sphinx 0.9.9 new API (patch by Olivier Poitrey)
+ <notes>- Fixed crash when extending class doesn't call parent constructor.
  </notes>
  <contents>
   <dir name="/">
@@ -55,6 +54,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
  </extsrcrelease>
  <changelog>
+  <release>
+   <stability><release>stable</release><api>stable</api></stability>
+   <version><release>1.0.1</release><api>1.0.1</api></version>
+   <date>2009-11-03</date>
+   <notes>- Fixed build failure with PHP 5.1.x.
+- Added support for setSelect(), available in sphinx 0.9.9 new API (patch by Olivier Poitrey)
+   </notes>
+  </release>
   <release>
    <stability><release>stable</release><api>stable</api></stability>
    <version><release>1.0.0</release><api>1.0.0</api></version>

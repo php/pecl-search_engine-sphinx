@@ -53,6 +53,12 @@ ZEND_GET_MODULE(sphinx)
 
 #define SPHINX_CONST(name) REGISTER_LONG_CONSTANT(#name, name, CONST_CS | CONST_PERSISTENT)
 
+#define SPHINX_INITIALIZED(c) \
+		if (!(c) || !(c)->sphinx) { \
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "using uninitialized SphinxClient object"); \
+			RETURN_FALSE; \
+		}
+
 static void php_sphinx_client_obj_dtor(void *object TSRMLS_DC) /* {{{ */
 {
 	php_sphinx_client *c = (php_sphinx_client *)object;
@@ -353,6 +359,7 @@ static PHP_METHOD(SphinxClient, setServer)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_server(c->sphinx, server, (int)port);
 	if (!res) {
@@ -374,6 +381,7 @@ static PHP_METHOD(SphinxClient, setLimits)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_limits(c->sphinx, (int)offset, (int)limit, (int)max_matches, (int)cutoff);
 	if (!res) {
@@ -395,6 +403,7 @@ static PHP_METHOD(SphinxClient, setMatchMode)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 	
 	res = sphinx_set_match_mode(c->sphinx, mode);
 	if (!res) {
@@ -421,6 +430,7 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 	
 	num_weights = zend_hash_num_elements(Z_ARRVAL_P(weights));
 	if (!num_weights) {
@@ -481,6 +491,7 @@ static PHP_METHOD(SphinxClient, setSelect)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_select(c->sphinx, clause);
 	if (!res) {
@@ -503,6 +514,7 @@ static PHP_METHOD(SphinxClient, setIDRange)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_id_range(c->sphinx, (sphinx_uint64_t)min, (sphinx_uint64_t)max);
 	if (!res) {
@@ -527,6 +539,7 @@ static PHP_METHOD(SphinxClient, setFilter)
 	}
 	
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	num_values = zend_hash_num_elements(Z_ARRVAL_P(values));
 	if (!num_values) {
@@ -568,6 +581,7 @@ static PHP_METHOD(SphinxClient, setFilterRange)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_add_filter_range(c->sphinx, attribute, min, max, exclude);
 
@@ -592,6 +606,7 @@ static PHP_METHOD(SphinxClient, setFilterFloatRange)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_add_filter_float_range(c->sphinx, attribute, min, max, exclude);
 
@@ -615,6 +630,7 @@ static PHP_METHOD(SphinxClient, setGeoAnchor)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_geoanchor(c->sphinx, attrlat, attrlong, latitude, longitude);
 
@@ -641,6 +657,7 @@ static PHP_METHOD(SphinxClient, setGroupBy)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_groupby(c->sphinx, attribute, func, groupsort);
 
@@ -663,6 +680,7 @@ static PHP_METHOD(SphinxClient, setGroupDistinct)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_groupby_distinct(c->sphinx, attribute);
 
@@ -685,6 +703,7 @@ static PHP_METHOD(SphinxClient, setRetries)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_retries(c->sphinx, (int)count, (int)delay);
 
@@ -707,6 +726,7 @@ static PHP_METHOD(SphinxClient, setMaxQueryTime)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_max_query_time(c->sphinx, (int)qtime);
 
@@ -729,6 +749,7 @@ static PHP_METHOD(SphinxClient, setRankingMode)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_ranking_mode(c->sphinx, (int)ranker);
 
@@ -756,6 +777,7 @@ static PHP_METHOD(SphinxClient, setFieldWeights)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	num_weights = zend_hash_num_elements(Z_ARRVAL_P(weights));
 	if (!num_weights) {
@@ -816,6 +838,7 @@ static PHP_METHOD(SphinxClient, setSortMode)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_sort_mode(c->sphinx, (int)mode, sortby); 
 
@@ -838,6 +861,7 @@ static PHP_METHOD(SphinxClient, setConnectTimeout)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_connect_timeout(c->sphinx, timeout);
 
@@ -859,6 +883,7 @@ static PHP_METHOD(SphinxClient, setArrayResult)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	c->array_result = array_result; 
 	RETURN_TRUE;
@@ -881,6 +906,7 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	attrs_num = zend_hash_num_elements(Z_ARRVAL_P(attributes));
 
@@ -1020,6 +1046,7 @@ static PHP_METHOD(SphinxClient, buildExcerpts)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	docs_num = zend_hash_num_elements(Z_ARRVAL_P(docs_array));
 
@@ -1155,6 +1182,7 @@ static PHP_METHOD(SphinxClient, buildKeywords)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	result = sphinx_build_keywords(c->sphinx, query, index, hits, &num_keywords);
 	if (!result || num_keywords <= 0) {
@@ -1189,6 +1217,7 @@ static PHP_METHOD(SphinxClient, resetFilters)
 	php_sphinx_client *c;
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	sphinx_reset_filters(c->sphinx);
 }
@@ -1200,6 +1229,7 @@ static PHP_METHOD(SphinxClient, resetGroupBy)
 	php_sphinx_client *c;
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	sphinx_reset_groupby(c->sphinx);
 }
@@ -1212,6 +1242,7 @@ static PHP_METHOD(SphinxClient, getLastWarning)
 	const char *warning;
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	warning = sphinx_warning(c->sphinx);
 	if (!warning || !warning[0]) {
@@ -1228,6 +1259,7 @@ static PHP_METHOD(SphinxClient, getLastError)
 	const char *error;
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	error = sphinx_error(c->sphinx);
 	if (!error || !error[0]) {
@@ -1250,6 +1282,7 @@ static PHP_METHOD(SphinxClient, query)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	result = sphinx_query(c->sphinx, query, index, comment);
 
@@ -1274,6 +1307,7 @@ static PHP_METHOD(SphinxClient, addQuery)
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	res = sphinx_add_query(c->sphinx, query, index, comment);
 
@@ -1294,6 +1328,7 @@ static PHP_METHOD(SphinxClient, runQueries)
 	zval *single_result;
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
 
 	results = sphinx_run_queries(c->sphinx);
 
