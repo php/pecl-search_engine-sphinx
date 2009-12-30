@@ -52,6 +52,34 @@ if test "$PHP_SPHINX" != "no"; then
     -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
   
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_open,
+  [
+    AC_DEFINE(HAVE_SPHINX_OPEN,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])  
+  
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_close,
+  [
+    AC_DEFINE(HAVE_SPHINX_CLOSE,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])
+  
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_status,
+  [
+    AC_DEFINE(HAVE_SPHINX_STATUS,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])
+  
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_add_override,
+  [
+    AC_DEFINE(HAVE_SPHINX_ADD_OVERRIDE,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])
+  
   PHP_SUBST(SPHINX_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(sphinx, sphinx.c, $ext_shared)
