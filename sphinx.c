@@ -171,6 +171,19 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 	/* status */
 	add_assoc_long_ex(*array, "status", sizeof("status"), result->status);
 
+	switch(result->status) {
+		case SEARCHD_OK:
+			/* ok, continue reading data */
+			break;
+		case SEARCHD_WARNING:
+			/* this seems to be safe, too */
+			break;
+		default: 
+			/* libsphinxclient doesn't nullify the data 
+			   in case of error, so it's not safe to continue. */
+			return;
+	}
+
 	/* fields */
 	MAKE_STD_ZVAL(tmp);
 	array_init(tmp);
