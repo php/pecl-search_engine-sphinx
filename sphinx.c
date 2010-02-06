@@ -1514,7 +1514,8 @@ static PHP_METHOD(SphinxClient, setOverride)
 	vals = safe_emalloc(values_num, sizeof(unsigned int), 0);
 	for (zend_hash_internal_pointer_reset(Z_ARRVAL_P(values));
 		 zend_hash_get_current_data(Z_ARRVAL_P(values), (void **) &attr_value) != FAILURE;
-		 zend_hash_move_forward(Z_ARRVAL_P(values))) {
+		 zend_hash_move_forward(Z_ARRVAL_P(values))) 
+	{
 		char *str_id;
 		ulong id;
 		int key_type;
@@ -1560,11 +1561,10 @@ static PHP_METHOD(SphinxClient, setOverride)
 	}
 	
 	res = sphinx_add_override(c->sphinx, attribute, docids, values_num, vals); 
-	if (res < 0) {
-		RETVAL_FALSE;
-	} else {
-		RETVAL_LONG(res);
+	if (!res) {
+		RETURN_FALSE;
 	}
+	RETURN_TRUE;
 
 cleanup:
 	if (docids) {
