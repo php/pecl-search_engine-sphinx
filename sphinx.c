@@ -321,7 +321,7 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 	add_assoc_long_ex(*array, "total_found", sizeof("total_found"), result->total_found);
 	
 	/* time */
-	add_assoc_double_ex(*array, "time", sizeof("time"), result->time_msec/1000);
+	add_assoc_double_ex(*array, "time", sizeof("time"), (double)result->time_msec/1000.0);
 
 	/* words */
 	if (result->num_words) {
