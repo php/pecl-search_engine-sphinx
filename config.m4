@@ -18,10 +18,10 @@ if test "$PHP_SPHINX" != "no"; then
     done
   else 
     AC_MSG_CHECKING([for libsphinxclient headers in $PHP_SPHINX])
-	if test -r $PHP_SPHINX/$SEARCH_FOR; then
-	  SPHINX_DIR=$PHP_SPHINX
+    if test -r $PHP_SPHINX/$SEARCH_FOR; then
+      SPHINX_DIR=$PHP_SPHINX
       AC_MSG_RESULT([found])
-	fi
+    fi
   fi
 
   if test -z "$SPHINX_DIR"; then
@@ -44,38 +44,20 @@ if test "$PHP_SPHINX" != "no"; then
     -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
   
+  AC_DEFINE(LIBSPHINX_VERSION_ID,98,[ ])
+  
   PHP_CHECK_LIBRARY($LIBNAME,sphinx_set_select,
   [
     PHP_ADD_LIBRARY_WITH_PATH($LIBNAME, $SPHINX_DIR/$PHP_LIBDIR, SPHINX_SHARED_LIBADD)
-    AC_DEFINE(HAVE_SPHINX_SET_SELECT,1,[ ])
+      AC_DEFINE(LIBSPHINX_VERSION_ID,99,[ ])
   ],[],[
     -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
   
-  PHP_CHECK_LIBRARY($LIBNAME,sphinx_open,
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_get_string,
   [
-    AC_DEFINE(HAVE_SPHINX_OPEN,1,[ ])
-  ],[],[
-    -L$SPHINX_DIR/$PHP_LIBDIR -lm
-  ])  
-  
-  PHP_CHECK_LIBRARY($LIBNAME,sphinx_close,
-  [
-    AC_DEFINE(HAVE_SPHINX_CLOSE,1,[ ])
-  ],[],[
-    -L$SPHINX_DIR/$PHP_LIBDIR -lm
-  ])
-  
-  PHP_CHECK_LIBRARY($LIBNAME,sphinx_status,
-  [
-    AC_DEFINE(HAVE_SPHINX_STATUS,1,[ ])
-  ],[],[
-    -L$SPHINX_DIR/$PHP_LIBDIR -lm
-  ])
-  
-  PHP_CHECK_LIBRARY($LIBNAME,sphinx_add_override,
-  [
-    AC_DEFINE(HAVE_SPHINX_ADD_OVERRIDE,1,[ ])
+    PHP_ADD_LIBRARY_WITH_PATH($LIBNAME, $SPHINX_DIR/$PHP_LIBDIR, SPHINX_SHARED_LIBADD)
+      AC_DEFINE(LIBSPHINX_VERSION_ID,110,[ ])
   ],[],[
     -L$SPHINX_DIR/$PHP_LIBDIR -lm
   ])
