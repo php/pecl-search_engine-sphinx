@@ -278,6 +278,11 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 					case SPH_ATTR_FLOAT:
 						ZVAL_DOUBLE(sub_sub_element, sphinx_get_float(result, i, j));
 						break;
+#if LIBSPHINX_VERSION_ID >= 110
+					case SPH_ATTR_STRING:
+						ZVAL_STRING(sub_sub_element, sphinx_get_string(result, i, j), 1);
+						break;                        
+#endif
 					default:
 #if SIZEOF_LONG == 8
 						ZVAL_LONG(sub_sub_element, sphinx_get_int(result, i, j));
@@ -491,7 +496,7 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 }
 /* }}} */
 
-#ifdef HAVE_SPHINX_SET_SELECT
+#if LIBSPHINX_VERSION_ID >= 99
 /* {{{ proto bool SphinxClient::setSelect(string clause) */
 static PHP_METHOD(SphinxClient, setSelect)
 {
@@ -903,7 +908,7 @@ static PHP_METHOD(SphinxClient, setArrayResult)
 }
 /* }}} */
 
-/* {{{ proto int SphinxClient::updateAttributes(string index, array attributes, array values) */
+/* {{{ proto int SphinxClient::updateAttributes(string index, array attributes, array values[, bool mva]) */
 static PHP_METHOD(SphinxClient, updateAttributes)
 {
 	php_sphinx_client *c;
@@ -913,8 +918,9 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	int index_len, attrs_num, values_num, a = 0, i = 0, j = 0;
 	int res;
 	sphinx_uint64_t *docids = NULL, *vals = NULL;
+	zend_bool mval = 0;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "saa", &index, &index_len, &attributes, &values) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "saa|b", &index, &index_len, &attributes, &values, &mval) == FAILURE) {
 		return;
 	}
 
@@ -1093,7 +1099,8 @@ static PHP_METHOD(SphinxClient, buildExcerpts)
 		ulong dummy;
 
 		/* nullify everything */
-		memset(&opts, 0, sizeof(sphinx_excerpt_options));
+		//memset(&opts, 0, sizeof(sphinx_excerpt_options));
+        sphinx_init_excerpt_options ( &opts );
 		for (zend_hash_internal_pointer_reset(Z_ARRVAL_P(opts_array));
 				zend_hash_get_current_data(Z_ARRVAL_P(opts_array), (void **) &item) != FAILURE;
 				zend_hash_move_forward(Z_ARRVAL_P(opts_array))) {
@@ -1147,6 +1154,40 @@ static PHP_METHOD(SphinxClient, buildExcerpts)
 				SEPARATE_ZVAL(item);
 				convert_to_boolean_ex(item);
 				opts.weight_order = Z_LVAL_PP(item);
+#if LIBSPHINX_VERSION_ID >= 110
+			} else if (OPTS_EQUAL(string_key, string_key_len, "query_mode")) {
+				SEPARATE_ZVAL(item);
+				convert_to_boolean_ex(item);
+				opts.query_mode = Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "force_all_words")) {
+				SEPARATE_ZVAL(item);
+				convert_to_boolean_ex(item);
+				opts.force_all_words = Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "limit_passages")) {
+				SEPARATE_ZVAL(item);
+				convert_to_long_ex(item);
+				opts.limit_passages = (int)Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "limit_words")) {
+				SEPARATE_ZVAL(item);
+				convert_to_long_ex(item);
+				opts.limit_words = (int)Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "start_passage_id")) {
+				SEPARATE_ZVAL(item);
+				convert_to_long_ex(item);
+				opts.start_passage_id = (int)Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "load_files")) {
+				SEPARATE_ZVAL(item);
+				convert_to_boolean_ex(item);
+				opts.load_files = Z_LVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "html_strip_mode")) {
+				SEPARATE_ZVAL(item);
+				convert_to_string_ex(item);
+				opts.html_strip_mode = Z_STRVAL_PP(item);
+			} else if (OPTS_EQUAL(string_key, string_key_len, "allow_empty")) {
+				SEPARATE_ZVAL(item);
+				convert_to_boolean_ex(item);
+				opts.allow_empty = Z_LVAL_PP(item);
+#endif
 			} else {
 				/* ignore invalid option names */
 			}
@@ -1407,7 +1448,7 @@ static PHP_METHOD(SphinxClient, escapeString)
 }
 /* }}} */
 
-#ifdef HAVE_SPHINX_OPEN
+#if LIBSPHINX_VERSION_ID >= 99
 /* {{{ proto bool SphinxClient::open() */
 static PHP_METHOD(SphinxClient, open)
 {
@@ -1424,9 +1465,7 @@ static PHP_METHOD(SphinxClient, open)
 	RETURN_TRUE;
 }
 /* }}} */
-#endif
 
-#ifdef HAVE_SPHINX_CLOSE
 /* {{{ proto bool SphinxClient::close() */
 static PHP_METHOD(SphinxClient, close)
 {
@@ -1443,9 +1482,7 @@ static PHP_METHOD(SphinxClient, close)
 	RETURN_TRUE;
 }
 /* }}} */
-#endif
 
-#ifdef HAVE_SPHINX_STATUS
 /* {{{ proto array SphinxClient::status() */
 static PHP_METHOD(SphinxClient, status)
 {
@@ -1477,9 +1514,7 @@ static PHP_METHOD(SphinxClient, status)
 	sphinx_status_destroy(result, num_rows, num_cols);
 }
 /* }}} */
-#endif
 
-#ifdef HAVE_SPHINX_ADD_OVERRIDE
 /* {{{ proto bool SphinxClient::setOverride(string attribute, int type, array values) */
 static PHP_METHOD(SphinxClient, setOverride)
 {
@@ -1562,9 +1597,10 @@ static PHP_METHOD(SphinxClient, setOverride)
 	
 	res = sphinx_add_override(c->sphinx, attribute, docids, values_num, vals); 
 	if (!res) {
-		RETURN_FALSE;
+		RETVAL_FALSE;
+	} else {
+		RETVAL_TRUE;
 	}
-	RETURN_TRUE;
 
 cleanup:
 	if (docids) {
@@ -1612,7 +1648,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setindexweights, 0, 0, 1)
 	ZEND_ARG_INFO(0, weights)
 ZEND_END_ARG_INFO()
 
-#ifdef HAVE_SPHINX_SET_SELECT
+#if LIBSPHINX_VERSION_ID >= 99
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setselect, 0, 0, 1)
 	ZEND_ARG_INFO(0, clause)
 ZEND_END_ARG_INFO()
@@ -1662,8 +1698,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setmaxquerytime, 0, 0, 1)
 	ZEND_ARG_INFO(0, qtime)
 ZEND_END_ARG_INFO()
 
-#ifdef HAVE_SPHINX_ADD_OVERRIDE
-ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setoverride, 0, 0, 2)
+#if LIBSPHINX_VERSION_ID >= 99
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setoverride, 0, 0, 3)
 	ZEND_ARG_INFO(0, attribute)
 	ZEND_ARG_INFO(0, type)
 	ZEND_ARG_INFO(0, values)
@@ -1691,6 +1727,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_updateattributes, 0, 0, 3)
 	ZEND_ARG_INFO(0, index)
 	ZEND_ARG_INFO(0, attributes)
 	ZEND_ARG_INFO(0, values)
+	ZEND_ARG_INFO(0, mva)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_buildexcerpts, 0, 0, 3)
@@ -1725,13 +1762,13 @@ static zend_function_entry sphinx_client_methods[] = { /* {{{ */
 	PHP_ME(SphinxClient, addQuery, 				arginfo_sphinxclient_query, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, buildExcerpts, 		arginfo_sphinxclient_buildexcerpts, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, buildKeywords, 		arginfo_sphinxclient_buildkeywords, ZEND_ACC_PUBLIC)
-#ifdef HAVE_SPHINX_CLOSE
+#if LIBSPHINX_VERSION_ID >= 99
 	PHP_ME(SphinxClient, close, 				arginfo_sphinxclient__param_void, ZEND_ACC_PUBLIC)
 #endif		
 	PHP_ME(SphinxClient, getLastError, 			arginfo_sphinxclient__param_void, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, getLastWarning, 		arginfo_sphinxclient__param_void, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, escapeString, 			arginfo_sphinxclient_escapestring, ZEND_ACC_PUBLIC)
-#ifdef HAVE_SPHINX_OPEN	
+#if LIBSPHINX_VERSION_ID >= 99
 	PHP_ME(SphinxClient, open, 					arginfo_sphinxclient__param_void, ZEND_ACC_PUBLIC)
 #endif		
 	PHP_ME(SphinxClient, query, 				arginfo_sphinxclient_query, ZEND_ACC_PUBLIC)
@@ -1749,20 +1786,20 @@ static zend_function_entry sphinx_client_methods[] = { /* {{{ */
 	PHP_ME(SphinxClient, setGroupDistinct, 		arginfo_sphinxclient_setgroupdistinct, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setIndexWeights, 		arginfo_sphinxclient_setindexweights, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setIDRange, 			arginfo_sphinxclient_setidrange, ZEND_ACC_PUBLIC)
-#ifdef HAVE_SPHINX_SET_SELECT
+#if LIBSPHINX_VERSION_ID >= 99
 	PHP_ME(SphinxClient, setSelect, 			arginfo_sphinxclient_setselect, ZEND_ACC_PUBLIC)
 #endif
 	PHP_ME(SphinxClient, setLimits, 			arginfo_sphinxclient_setlimits, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setMatchMode, 			arginfo_sphinxclient_setmatchmode, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setMaxQueryTime, 		arginfo_sphinxclient_setmaxquerytime, ZEND_ACC_PUBLIC)
-#ifdef HAVE_SPHINX_ADD_OVERRIDE
+#if LIBSPHINX_VERSION_ID >= 99
 	PHP_ME(SphinxClient, setOverride, 			arginfo_sphinxclient_setoverride, ZEND_ACC_PUBLIC)
 #endif	
 	PHP_ME(SphinxClient, setRankingMode, 		arginfo_sphinxclient_setrankingmode, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setRetries, 			arginfo_sphinxclient_setretries, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setServer, 			arginfo_sphinxclient_setserver, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setSortMode, 			arginfo_sphinxclient_setsortmode, ZEND_ACC_PUBLIC)
-#ifdef HAVE_SPHINX_STATUS	
+#if LIBSPHINX_VERSION_ID >= 99
 	PHP_ME(SphinxClient, status, 				arginfo_sphinxclient__param_void, ZEND_ACC_PUBLIC)	
 #endif	
 	PHP_ME(SphinxClient, updateAttributes, 		arginfo_sphinxclient_updateattributes, ZEND_ACC_PUBLIC)
@@ -1807,6 +1844,15 @@ PHP_MINIT_FUNCTION(sphinx)
 	SPHINX_CONST(SPH_RANK_BM25);
 	SPHINX_CONST(SPH_RANK_NONE);
 	SPHINX_CONST(SPH_RANK_WORDCOUNT);
+#ifdef SPH_RANK_PROXIMITY
+	SPHINX_CONST(SPH_RANK_PROXIMITY);
+#endif
+#ifdef SPH_RANK_MATCHANY
+	SPHINX_CONST(SPH_RANK_MATCHANY);
+#endif
+#ifdef SPH_RANK_FIELDMASK
+	SPHINX_CONST(SPH_RANK_FIELDMASK);
+#endif
 
 	SPHINX_CONST(SPH_SORT_RELEVANCE);
 	SPHINX_CONST(SPH_SORT_ATTR_DESC);
