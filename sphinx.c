@@ -83,7 +83,11 @@ static zend_object_value php_sphinx_client_new(zend_class_entry *ce TSRMLS_DC) /
 }
 /* }}} */
 
+#if PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4
+static zval *php_sphinx_client_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC) /* {{{ */
+#else
 static zval *php_sphinx_client_read_property(zval *object, zval *member, int type TSRMLS_DC) /* {{{ */
+#endif
 {
 	php_sphinx_client *c;
 	zval tmp_member;
@@ -102,7 +106,11 @@ static zval *php_sphinx_client_read_property(zval *object, zval *member, int typ
 	/* XXX we can either create retval ourselves (for custom properties) or use standard handlers */
 
 	std_hnd = zend_get_std_object_handlers();
+#if PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4
+	retval = std_hnd->read_property(object, member, type, key TSRMLS_CC);
+#else
 	retval = std_hnd->read_property(object, member, type TSRMLS_CC);
+#endif
 
 	if (member == &tmp_member) {
 		zval_dtor(member);
