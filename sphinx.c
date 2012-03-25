@@ -763,6 +763,31 @@ static PHP_METHOD(SphinxClient, setMaxQueryTime)
 }
 /* }}} */
 
+#ifdef HAVE_3ARG_SPHINX_SET_RANKING_MODE
+/* {{{ proto bool SphinxClient::setRankingMode(int ranker, string ranking_expression) */
+static PHP_METHOD(SphinxClient, setRankingMode)
+{
+	php_sphinx_client *c;
+	long ranker;
+	int res, rank_expr_len;
+	char *rank_expr;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &ranker, &rank_expr, &rank_expr_len) == FAILURE) {
+		return;
+	}
+
+	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
+
+	res = sphinx_set_ranking_mode(c->sphinx, (int)ranker, rank_expr);
+
+	if (!res) {
+		RETURN_FALSE;
+	}
+	RETURN_TRUE;
+}
+/* }}} */
+#else
 /* {{{ proto bool SphinxClient::setRankingMode(int ranker) */
 static PHP_METHOD(SphinxClient, setRankingMode)
 {
@@ -785,6 +810,7 @@ static PHP_METHOD(SphinxClient, setRankingMode)
 	RETURN_TRUE;
 }
 /* }}} */
+#endif
 
 /* {{{ proto bool SphinxClient::setFieldWeights(array weights) */
 static PHP_METHOD(SphinxClient, setFieldWeights)
@@ -1779,9 +1805,16 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setoverride, 0, 0, 3)
 ZEND_END_ARG_INFO()
 #endif
 
+#if HAVE_3ARG_SPHINX_SET_RANKING_MODE
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setrankingmode, 0, 0, 2)
+	ZEND_ARG_INFO(0, ranker)
+	ZEND_ARG_INFO(0, rank_expression)
+ZEND_END_ARG_INFO()
+#else
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setrankingmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, ranker)
 ZEND_END_ARG_INFO()
+#endif
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setsortmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, mode)
