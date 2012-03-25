@@ -250,8 +250,10 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 			array_init(sub_element);
 
 			for (j = 0; j < result->num_attrs; j++) {
+#if SIZEOF_LONG != 8
 				double float_value;
 				char buf[128];
+#endif
 
 				MAKE_STD_ZVAL(sub_sub_element);
 
@@ -558,7 +560,7 @@ static PHP_METHOD(SphinxClient, setFilter)
 	char *attribute;
 	int	attribute_len, num_values, i = 0, res;
 	zend_bool exclude = 0;
-	sphinx_uint64_t *u_values;
+	sphinx_int64_t *u_values;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sa|b", &attribute, &attribute_len, &values, &exclude) == FAILURE) {
 		return;
@@ -572,14 +574,14 @@ static PHP_METHOD(SphinxClient, setFilter)
 		RETURN_FALSE;
 	}
 
-	u_values = safe_emalloc(num_values, sizeof(sphinx_uint64_t), 0);
+	u_values = safe_emalloc(num_values, sizeof(sphinx_int64_t), 0);
 
 	for (zend_hash_internal_pointer_reset(Z_ARRVAL_P(values));
 		 zend_hash_get_current_data(Z_ARRVAL_P(values), (void **) &item) != FAILURE;
 		 zend_hash_move_forward(Z_ARRVAL_P(values))) {
 		
 		convert_to_double_ex(item);
-		u_values[i] = (sphinx_uint64_t)Z_DVAL_PP(item);
+		u_values[i] = (sphinx_int64_t)Z_DVAL_PP(item);
 		i++;
 	}
 
@@ -949,11 +951,16 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	zval *attributes, *values, **item; 
 	char *index;
 	const char **attrs;
-	int index_len, attrs_num, values_num, values_mva_num, values_mva_size = 0;
-	int a = 0, i = 0, j = 0;
-	int res = 0, res_mva;
-	sphinx_uint64_t *docids = NULL, *vals = NULL;
+	int index_len, attrs_num, values_num;
+	int res = 0;
+	sphinx_uint64_t *docids = NULL;
+	sphinx_int64_t *vals = NULL;
 	unsigned int *vals_mva = NULL;
+#if LIBSPHINX_VERSION_ID >= 110
+	int res_mva, values_mva_num, values_mva_size = 0;
+	zval **attr_value_mva;
+#endif
+	int a = 0, i = 0, j = 0;
 	zend_bool mva = 0;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "saa|b", &index, &index_len, &attributes, &values, &mva) == FAILURE) {
@@ -1002,16 +1009,16 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 		goto cleanup;
 	}
 
-	docids = emalloc(sizeof(sphinx_uint64_t) * values_num);
+	docids = emalloc(sizeof(sphinx_int64_t) * values_num);
 	if (!mva) {
-		vals = safe_emalloc(values_num * attrs_num, sizeof(sphinx_uint64_t), 0);
+		vals = safe_emalloc(values_num * attrs_num, sizeof(sphinx_int64_t), 0);
 	}
 	for (zend_hash_internal_pointer_reset(Z_ARRVAL_P(values));
 		 zend_hash_get_current_data(Z_ARRVAL_P(values), (void **) &item) != FAILURE;
 		 zend_hash_move_forward(Z_ARRVAL_P(values))) {
 		char *str_id;
 		ulong id;
-		zval **attr_value, **attr_value_mva;
+		zval **attr_value;
 		int failed = 0, key_type;
 		uint str_id_len;
 		double float_id = 0;
@@ -1052,11 +1059,11 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 		}
 		
 		a = 0;
-		values_mva_size = 0;
 		for (zend_hash_internal_pointer_reset(Z_ARRVAL_PP(item));
 				zend_hash_get_current_data(Z_ARRVAL_PP(item), (void **) &attr_value) != FAILURE;
 				zend_hash_move_forward(Z_ARRVAL_PP(item))) {
 			if (mva) {
+#if LIBSPHINX_VERSION_ID >= 110
 				if (Z_TYPE_PP(attr_value) != IS_ARRAY) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "attribute value must be an array");
 					failed = 1;
@@ -1064,14 +1071,11 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 				}
 				values_mva_num = zend_hash_num_elements(Z_ARRVAL_PP(attr_value));
 				if (values_mva_num > values_mva_size) {
-					if (vals_mva) {
-						efree(vals_mva);
-					} 
 					values_mva_size = values_mva_num;
-					vals_mva = safe_emalloc(values_mva_size, sizeof(unsigned int), 0);
+					vals_mva = safe_erealloc(vals_mva, values_mva_size, sizeof(unsigned int), 0);
 				}
 				if (vals_mva) {
-					memset(vals_mva, NULL, values_mva_size);
+					memset(vals_mva, 0, values_mva_size * sizeof(unsigned int));
 				}
 				
 				j = 0;
@@ -1089,14 +1093,14 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 				if (failed) {
 					break;
 				}
-#if LIBSPHINX_VERSION_ID >= 110
+
 				res_mva = sphinx_update_attributes_mva(c->sphinx, index, attrs[a], docids[i], values_mva_num, vals_mva);
-#endif
+
 				if (res_mva < 0) {
 					failed = 1;
 					break;
 				}
-				
+#endif
 				a++; 
 			} else {
 				if (Z_TYPE_PP(attr_value) != IS_LONG) {
@@ -1104,7 +1108,7 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 					failed = 1;
 					break;
 				}
-				vals[j] = (sphinx_uint64_t)Z_LVAL_PP(attr_value);
+				vals[j] = (sphinx_int64_t)Z_LVAL_PP(attr_value);
 				j++;
 			}
 		}
