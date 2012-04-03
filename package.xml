@@ -21,20 +21,20 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>santiago739@gmail.com</email>
   <active>yes</active>
  </lead> 
- <date>2010-09-17</date>
- <time>17:00:00</time>
+ <date>2012-04-03</date>
+ <time>14:00:00</time>
  <version>
-  <release>1.1.0</release>
-  <api>1.1.0</api>
+  <release>1.2.0</release>
+  <api>1.2.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
- <notes>- Added support for new API in sphinx 1.10
- - Fixed PECL bug #18325 (support 1.10-beta string attributes)
- - Fixed PECL bug #17558 (time taken in search result was incorrect)
+ <notes>- Added mva support to updateAttributes().
+- Fixed build with 5_4.
+- Fixed bug #61392 (build failure with new version of libsphinxclient)
   </notes>
  <contents>
   <dir name="/">
@@ -62,7 +62,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
  </extsrcrelease>
  <changelog>
-   <release>
+  <release>
+   <stability><release>stable</release><api>stable</api></stability>
+   <version><release>1.1.0</release><api>1.1.0</api></version>
+   <date>2010-09-17</date>
+   <notes>- Added support for new API in sphinx 1.10
+ - Fixed PECL bug #18325 (support 1.10-beta string attributes)
+ - Fixed PECL bug #17558 (time taken in search result was incorrect)
+   </notes>
+  </release>
+  <release>
    <stability><release>stable</release><api>stable</api></stability>
    <version><release>1.0.4</release><api>1.0.4</api></version>
    <date>2010-02-26</date>
