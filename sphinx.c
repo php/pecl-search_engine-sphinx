@@ -772,9 +772,9 @@ static PHP_METHOD(SphinxClient, setRankingMode)
 	php_sphinx_client *c;
 	long ranker;
 	int res, rank_expr_len;
-	char *rank_expr;
+	char *rank_expr = NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls", &ranker, &rank_expr, &rank_expr_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l|s", &ranker, &rank_expr, &rank_expr_len) == FAILURE) {
 		return;
 	}
 
@@ -1810,7 +1810,7 @@ ZEND_END_ARG_INFO()
 #endif
 
 #if HAVE_3ARG_SPHINX_SET_RANKING_MODE
-ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setrankingmode, 0, 0, 2)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setrankingmode, 0, 0, 1)
 	ZEND_ARG_INFO(0, ranker)
 	ZEND_ARG_INFO(0, rank_expression)
 ZEND_END_ARG_INFO()
