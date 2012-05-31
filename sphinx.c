@@ -73,10 +73,20 @@ static zend_object_value php_sphinx_client_new(zend_class_entry *ce TSRMLS_DC) /
 {
 	php_sphinx_client *c;
 	zend_object_value retval;
+#if PHP_VERSION_ID < 50399
+	zval *tmp;
+#endif
 
 	c = ecalloc(1, sizeof(*c));
 	zend_object_std_init(&c->std, ce TSRMLS_CC);
 
+	ALLOC_HASHTABLE(c->std.properties);
+	zend_hash_init(c->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
+#if PHP_VERSION_ID < 50399
+	zend_hash_copy(c->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref, (void *) &tmp, sizeof(zval *));
+#else
+	object_properties_init(&c->std, ce);
+#endif
 	retval.handle = zend_objects_store_put(c, (zend_objects_store_dtor_t)zend_objects_destroy_object, php_sphinx_client_obj_dtor, NULL TSRMLS_CC);
 	retval.handlers = &php_sphinx_client_handlers;
 	return retval;
