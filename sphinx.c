@@ -776,7 +776,7 @@ static PHP_METHOD(SphinxClient, setMaxQueryTime)
 /* }}} */
 
 #ifdef HAVE_3ARG_SPHINX_SET_RANKING_MODE
-/* {{{ proto bool SphinxClient::setRankingMode(int ranker, string ranking_expression) */
+/* {{{ proto bool SphinxClient::setRankingMode(int ranker[, string ranking_expression]) */
 static PHP_METHOD(SphinxClient, setRankingMode)
 {
 	php_sphinx_client *c;
@@ -1972,6 +1972,15 @@ PHP_MINIT_FUNCTION(sphinx)
 #endif
 #ifdef SPH_RANK_FIELDMASK
 	SPHINX_CONST(SPH_RANK_FIELDMASK);
+#endif
+#ifdef SPH_RANK_SPH04
+	SPHINX_CONST(SPH_RANK_SPH04);
+#endif
+#ifdef SPH_RANK_EXPR
+	SPHINX_CONST(SPH_RANK_EXPR);
+#endif
+#ifdef SPH_RANK_TOTAL
+	SPHINX_CONST(SPH_RANK_TOTAL);
 #endif
 
 	SPHINX_CONST(SPH_SORT_RELEVANCE);
