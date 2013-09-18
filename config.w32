@@ -4,8 +4,10 @@
 ARG_WITH("sphinx", "for sphinx support", "yes");
 
 if (PHP_SPHINX == "yes") {
-	if (CHECK_LIB("libsphinxclient.lib", "sphinx_create") &&
+	if (CHECK_LIB("libsphinxclient.lib", "sphinx") &&
 			CHECK_HEADER_ADD_INCLUDE("sphinxclient.h", "CFLAGS_SPHINX")) {
+
+		ADD_FLAG("CFLAGS_SPHINX", "/D HAVE_3ARG_SPHINX_SET_RANKING_MODE=1");
 
 		EXTENSION("sphinx", "sphinx.c");
 	}
