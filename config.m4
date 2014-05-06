@@ -1,5 +1,16 @@
 dnl $Id$
 
+AC_DEFUN([SPHINX_CHECK_ENUM], [
+  AC_MSG_CHECKING(for $1 in sphinxclient.h)
+  AC_EGREP_HEADER($1,
+    [sphinxclient.h],
+	AC_DEFINE([HAVE_]$1, [], [Define if $1 is available])
+	AC_MSG_RESULT([found]),
+	AC_MSG_RESULT([not found])
+  )
+])
+
+
 PHP_ARG_WITH(sphinx, for sphinx support,
 [  --with-sphinx             Include sphinx support])
 
@@ -77,6 +88,18 @@ if test "$PHP_SPHINX" != "no"; then
     AC_DEFINE(HAVE_3ARG_SPHINX_SET_RANKING_MODE,1,[Whether we have 3 arg sphinx_set_ranking_mode()])
   fi
   CFLAGS=$_SAVE_CFLAGS
+
+  _SAVE_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="$CPPFLAGS -I$SPHINX_DIR/include"
+
+  SPHINX_CHECK_ENUM(SPH_RANK_PROXIMITY)
+  SPHINX_CHECK_ENUM(SPH_RANK_MATCHANY)
+  SPHINX_CHECK_ENUM(SPH_RANK_FIELDMASK)
+  SPHINX_CHECK_ENUM(SPH_RANK_SPH04)
+  SPHINX_CHECK_ENUM(SPH_RANK_EXPR)
+  SPHINX_CHECK_ENUM(SPH_RANK_TOTAL)
+
+  CPPFLAGS=$_SAVE_CPPFLAGS
 
   PHP_SUBST(SPHINX_SHARED_LIBADD)
 

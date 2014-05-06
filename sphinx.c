@@ -94,7 +94,7 @@ static zend_object_value php_sphinx_client_new(zend_class_entry *ce TSRMLS_DC) /
 /* }}} */
 
 #if PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4
-static zval *php_sphinx_client_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC) /* {{{ */
+static zval *php_sphinx_client_read_property(zval *object, zval *member, int type, const zend_literal *key TSRMLS_DC)
 #else
 static zval *php_sphinx_client_read_property(zval *object, zval *member, int type TSRMLS_DC) /* {{{ */
 #endif
@@ -1971,22 +1971,22 @@ PHP_MINIT_FUNCTION(sphinx)
 	SPHINX_CONST(SPH_RANK_BM25);
 	SPHINX_CONST(SPH_RANK_NONE);
 	SPHINX_CONST(SPH_RANK_WORDCOUNT);
-#ifdef SPH_RANK_PROXIMITY
+#ifdef HAVE_SPH_RANK_PROXIMITY
 	SPHINX_CONST(SPH_RANK_PROXIMITY);
 #endif
-#ifdef SPH_RANK_MATCHANY
+#ifdef HAVE_SPH_RANK_MATCHANY
 	SPHINX_CONST(SPH_RANK_MATCHANY);
 #endif
-#ifdef SPH_RANK_FIELDMASK
+#ifdef HAVE_SPH_RANK_FIELDMASK
 	SPHINX_CONST(SPH_RANK_FIELDMASK);
 #endif
-#ifdef SPH_RANK_SPH04
+#ifdef HAVE_SPH_RANK_SPH04
 	SPHINX_CONST(SPH_RANK_SPH04);
 #endif
-#ifdef SPH_RANK_EXPR
+#ifdef HAVE_SPH_RANK_EXPR
 	SPHINX_CONST(SPH_RANK_EXPR);
 #endif
-#ifdef SPH_RANK_TOTAL
+#ifdef HAVE_SPH_RANK_TOTAL
 	SPHINX_CONST(SPH_RANK_TOTAL);
 #endif
 
