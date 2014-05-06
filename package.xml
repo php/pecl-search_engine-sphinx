@@ -38,6 +38,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <contents>
   <dir name="/">
    <file name="CREDITS" role="doc" />
+   <file name="LICENSE" role="doc" />
    <file name="config.m4" role="src" />
    <file name="config.w32" role="src" />
    <file name="sphinx.c" role="src" />
