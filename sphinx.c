@@ -684,7 +684,8 @@ static PHP_METHOD(SphinxClient, setGroupBy)
 {
 	php_sphinx_client *c;
 	char *attribute, *groupsort = NULL;
-	int attribute_len, groupsort_len, func, res;
+	int attribute_len, groupsort_len, res;
+	long func;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl|s", &attribute, &attribute_len, &func, &groupsort, &groupsort_len) == FAILURE) {
 		return;
@@ -692,6 +693,11 @@ static PHP_METHOD(SphinxClient, setGroupBy)
 	
 	if (groupsort == NULL) {
 		groupsort = "@group desc";
+	}
+
+	if (func < SPH_GROUPBY_DAY || func > SPH_GROUPBY_ATTRPAIR) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "invalid group func specified (%ld)", func);
+		RETURN_FALSE;
 	}
 
 	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
