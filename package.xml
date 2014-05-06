@@ -70,7 +70,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Fixed bug #66272 (Some constants are not defined)
    </notes>
   </release>
- <changelog>
   <release>
    <stability><release>stable</release><api>stable</api></stability>
    <version><release>1.3.0</release><api>1.3.0</api></version>
