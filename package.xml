@@ -33,6 +33,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
  <notes>- Fixed bug #67216 (segfault on setGroupBy()) (Dmitry Saprykin)
+- Fixed bug #66272 (Some constants are not defined)
  </notes>
  <contents>
   <dir name="/">
