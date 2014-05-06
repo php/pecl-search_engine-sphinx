@@ -2,7 +2,7 @@ dnl $Id$
 
 AC_DEFUN([SPHINX_CHECK_ENUM], [
   AC_MSG_CHECKING(for $1 in sphinxclient.h)
-  AC_EGREP_HEADER($1,
+  AC_EGREP_HEADER($1 ,
     [sphinxclient.h],
 	AC_DEFINE([HAVE_]$1, [], [Define if $1 is available])
 	AC_MSG_RESULT([found]),
