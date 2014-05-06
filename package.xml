@@ -21,20 +21,18 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>santiago739@gmail.com</email>
   <active>yes</active>
  </lead> 
- <date>2013-04-04</date>
- <time>14:00:00</time>
+ <date>2014-05-06</date>
+ <time>18:00:00</time>
  <version>
-  <release>1.3.0</release>
-  <api>1.3.0</api>
+  <release>1.3.1</release>
+  <api>1.3.1</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
- <notes>- Fixed setRankingMode's proto and add new ranking mode constants (patch by Michael Squires)
-- Fixed segfault when reading object properties.
-- Fixed bug #62026 (Second param in setRankingMode should be optional)
+ <notes>- Fixed bug #67216 (segfault on setGroupBy()) (Dmitry Saprykin)
  </notes>
  <contents>
   <dir name="/">
@@ -62,6 +60,15 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <configureoption default="autodetect" name="with-sphinx" prompt="Please provide the installation prefix of libsphinxclient" />
  </extsrcrelease>
  <changelog>
+  <release>
+   <stability><release>stable</release><api>stable</api></stability>
+   <version><release>1.3.0</release><api>1.3.0</api></version>
+   <date>2013-04-04</date>
+   <notes>- Fixed setRankingMode's proto and add new ranking mode constants (patch by Michael Squires)
+- Fixed segfault when reading object properties.
+- Fixed bug #62026 (Second param in setRankingMode should be optional)
+   </notes>
+  </release>
   <release>
    <stability><release>stable</release><api>stable</api></stability>
    <version><release>1.2.0</release><api>1.2.0</api></version>
