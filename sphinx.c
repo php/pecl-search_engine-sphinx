@@ -1640,7 +1640,8 @@ static PHP_METHOD(SphinxClient, setOverride)
 	php_sphinx_client *c;
 	zval *values, **attr_value;
 	char *attribute;
-	int attribute_len, type, values_num, i = 0;
+	long type;
+	int attribute_len, values_num, i = 0;
 	int res;
 	sphinx_uint64_t *docids = NULL; 
 	unsigned int *vals = NULL;
