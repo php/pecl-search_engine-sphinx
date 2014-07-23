@@ -1550,6 +1550,10 @@ static PHP_METHOD(SphinxClient, escapeString)
 			case '&':
 			case '/':
 			case '\\':
+			case '^':
+			case '$':
+			case '=':
+			case '<':
 				*target++ = '\\';
 				*target++ = *source;
 				break;
