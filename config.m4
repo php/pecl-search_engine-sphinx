@@ -79,6 +79,13 @@ if test "$PHP_SPHINX" != "no"; then
     AC_DEFINE(LIBSPHINX_VERSION_ID,98,[ ])
   fi
 
+  PHP_CHECK_LIBRARY($LIBNAME,sphinx_add_filter_string,
+  [
+    AC_DEFINE(HAVE_SPHINX_ADD_FILTER_STRING,1,[ ])
+  ],[],[
+    -L$SPHINX_DIR/$PHP_LIBDIR -lm
+  ])
+
   _SAVE_CFLAGS=$CFLAGS
   CFLAGS="$CFLAGS -I$SPHINX_DIR/include"
   AC_CACHE_CHECK([for new sphinx_set_ranking_mode() signature], ac_cv_3arg_setrankingmode,

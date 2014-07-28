@@ -605,6 +605,31 @@ static PHP_METHOD(SphinxClient, setFilter)
 }
 /* }}} */
 
+#ifdef HAVE_SPHINX_ADD_FILTER_STRING
+/* {{{ proto bool SphinxClient::setFilterString(string attribute, string value[, bool exclude]) */
+static PHP_METHOD(SphinxClient, setFilterString)
+{
+	php_sphinx_client *c;
+	char *attribute, *value;
+	int	attribute_len, value_len, res;
+	zend_bool exclude = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss|b", &attribute, &attribute_len, &value, &value_len, &exclude) == FAILURE) {
+		return;
+	}
+
+	c = (php_sphinx_client *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	SPHINX_INITIALIZED(c)
+
+	res = sphinx_add_filter_string(c->sphinx, attribute, value, exclude ? 1 : 0);
+	if (!res) {
+		RETURN_FALSE;
+	}
+	RETURN_TRUE;
+}
+/* }}} */
+#endif
+
 /* {{{ proto bool SphinxClient::setFilterRange(string attribute, int min, int max[, bool exclude]) */
 static PHP_METHOD(SphinxClient, setFilterRange)
 {
@@ -1789,6 +1814,12 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilter, 0, 0, 2)
 	ZEND_ARG_INFO(0, exclude)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilterstring, 0, 0, 2)
+	ZEND_ARG_INFO(0, attribute)
+	ZEND_ARG_INFO(0, value)
+	ZEND_ARG_INFO(0, exclude)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sphinxclient_setfilterrange, 0, 0, 3)
 	ZEND_ARG_INFO(0, attribute)
 	ZEND_ARG_INFO(0, min)
@@ -1910,6 +1941,9 @@ static zend_function_entry sphinx_client_methods[] = { /* {{{ */
 	PHP_ME(SphinxClient, setConnectTimeout, 	arginfo_sphinxclient_setconnecttimeout, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setFieldWeights, 		arginfo_sphinxclient_setindexweights, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setFilter, 			arginfo_sphinxclient_setfilter, ZEND_ACC_PUBLIC)
+#ifdef HAVE_SPHINX_ADD_FILTER_STRING
+	PHP_ME(SphinxClient, setFilterString, 		arginfo_sphinxclient_setfilterstring, ZEND_ACC_PUBLIC)
+#endif
 	PHP_ME(SphinxClient, setFilterFloatRange, 	arginfo_sphinxclient_setfilterrange, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setFilterRange, 		arginfo_sphinxclient_setfilterrange, ZEND_ACC_PUBLIC)
 	PHP_ME(SphinxClient, setGeoAnchor, 			arginfo_sphinxclient_setgeoanchor, ZEND_ACC_PUBLIC)

@@ -32,7 +32,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP</license>
- <notes>- Fixed bug #67669 (SphinxClient::escapeString() is missing several symbols)
+ <notes>- Added setFilterString() method, available only when built with sphinxclient lib >= 2.2.3.
+- Fixed bug #67669 (SphinxClient::escapeString() is missing several symbols)
  </notes>
  <contents>
   <dir name="/">
