@@ -21,8 +21,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>santiago739@gmail.com</email>
   <active>yes</active>
  </lead> 
- <date>2014-07-06</date>
- <time>19:00:00</time>
+ <date>2015-05-21</date>
+ <time>15:00:00</time>
  <version>
   <release>1.3.3</release>
   <api>1.3.3</api>
@@ -34,6 +34,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://www.php.net/license">PHP</license>
  <notes>- Added setFilterString() method, available only when built with sphinxclient lib >= 2.2.3.
 - Fixed bug #67669 (SphinxClient::escapeString() is missing several symbols)
+- Fixed bug #69675 (crash when accessing properties of subclass)
  </notes>
  <contents>
   <dir name="/">
