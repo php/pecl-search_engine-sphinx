@@ -80,9 +80,9 @@ static zend_object_value php_sphinx_client_new(zend_class_entry *ce TSRMLS_DC) /
 	c = ecalloc(1, sizeof(*c));
 	zend_object_std_init(&c->std, ce TSRMLS_CC);
 
+#if PHP_VERSION_ID < 50399
 	ALLOC_HASHTABLE(c->std.properties);
 	zend_hash_init(c->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
-#if PHP_VERSION_ID < 50399
 	zend_hash_copy(c->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref, (void *) &tmp, sizeof(zval *));
 #else
 	object_properties_init(&c->std, ce);
@@ -134,18 +134,21 @@ static HashTable *php_sphinx_client_get_properties(zval *object TSRMLS_DC) /* {{
 	php_sphinx_client *c;
 	const char *warning, *error;
 	zval *tmp;
+	HashTable *props;
 
 	c = (php_sphinx_client *)zend_objects_get_address(object TSRMLS_CC);
+
+	props = zend_std_get_properties(object TSRMLS_CC);
 
 	error = sphinx_error(c->sphinx);
 	MAKE_STD_ZVAL(tmp);
 	ZVAL_STRING(tmp, (char *)error, 1);
-	zend_hash_update(c->std.properties, "error", sizeof("error"), (void *)&tmp, sizeof(zval *), NULL);
+	zend_hash_update(props, "error", sizeof("error"), (void *)&tmp, sizeof(zval *), NULL);
 
 	warning = sphinx_warning(c->sphinx);
 	MAKE_STD_ZVAL(tmp);
 	ZVAL_STRING(tmp, (char *)warning, 1);
-	zend_hash_update(c->std.properties, "warning", sizeof("warning"), (void *)&tmp, sizeof(zval *), NULL);
+	zend_hash_update(props, "warning", sizeof("warning"), (void *)&tmp, sizeof(zval *), NULL);
 	return c->std.properties;
 }
 /* }}} */
