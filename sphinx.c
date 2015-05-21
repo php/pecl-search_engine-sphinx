@@ -99,12 +99,9 @@ static zval *php_sphinx_client_read_property(zval *object, zval *member, int typ
 static zval *php_sphinx_client_read_property(zval *object, zval *member, int type TSRMLS_DC) /* {{{ */
 #endif
 {
-	php_sphinx_client *c;
 	zval tmp_member;
 	zval *retval;
 	zend_object_handlers *std_hnd;
-
-	c = (php_sphinx_client *)zend_object_store_get_object(object TSRMLS_CC);
 
 	if (member->type != IS_STRING) {
 		tmp_member = *member;
