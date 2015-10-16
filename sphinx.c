@@ -383,7 +383,7 @@ static PHP_METHOD(SphinxClient, setServer)
 static PHP_METHOD(SphinxClient, setLimits)
 {
 	php_sphinx_client *c;
-	zend_long offset, limit, max_matches = 0, cutoff = 0;
+	zend_long offset, limit, max_matches = 1000, cutoff = 0;
 	int res;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "ll|ll", &offset, &limit, &max_matches, &cutoff) == FAILURE) {
