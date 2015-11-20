@@ -78,11 +78,8 @@ static zend_object *php_sphinx_client_new(zend_class_entry *ce) /* {{{ */
 {
 	php_sphinx_client *c;
 
-	c = ecalloc(1, sizeof(*c));
+	c = ecalloc(1, sizeof(*c) + zend_object_properties_size(ce));
 	zend_object_std_init(&c->std, ce);
-
-	ALLOC_HASHTABLE(c->std.properties);
-	zend_hash_init(c->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
 	object_properties_init(&c->std, ce);
 	c->std.handlers = &php_sphinx_client_handlers;
 	return &c->std;
