@@ -856,7 +856,7 @@ static PHP_METHOD(SphinxClient, setFieldWeights)
 	ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(weights), item) {
 		zend_string *string_key;
 
-		if (zend_hash_get_current_key_ex(Z_ARRVAL_P(weights), &string_key, &num_key, NULL) != HASH_KEY_IS_STRING) {
+		if (zend_hash_get_current_key(Z_ARRVAL_P(weights), &string_key, &num_key) != HASH_KEY_IS_STRING) {
 			/* if the key is not string.. well.. you're screwed */
 			break;
 		}
