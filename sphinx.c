@@ -195,7 +195,7 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 		add_assoc_string(&tmp, result->attr_names[i], buf);
 #endif
 	}
-	add_assoc_zval_ex(array, "attrs", sizeof("attrs"), &tmp);
+	add_assoc_zval(array, "attrs", &tmp);
 
 	/* matches */
 	if (result->num_matches) {
