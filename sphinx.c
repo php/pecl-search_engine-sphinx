@@ -428,7 +428,7 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 	int num_weights, res = 0, i;
 	int *index_weights;
 	char **index_names;
-	unsigned long int num_key;
+	zend_string *string_key;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &weights) == FAILURE) {
 		return;
@@ -449,10 +449,8 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 	/* reset num_weights, we'll reuse it count _real_ number of entries */
 	num_weights = 0;
 
-	ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(weights), item) {
-		zend_string *string_key;
-
-		if (zend_hash_get_current_key_ex(Z_ARRVAL_P(weights), &string_key, &num_key, NULL) != HASH_KEY_IS_STRING) {
+	ZEND_HASH_FOREACH_STR_KEY_VAL_IND(Z_ARRVAL_P(weights), string_key, item) {
+		if (!string_key) {
 			/* if the key is not string.. well.. you're screwed */
 			break;
 		}
@@ -832,7 +830,7 @@ static PHP_METHOD(SphinxClient, setFieldWeights)
 	int num_weights, res = 0, i;
 	int *field_weights;
 	char **field_names;
-	unsigned long int num_key;
+	zend_string *string_key;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &weights) == FAILURE) {
 		return;
@@ -853,10 +851,9 @@ static PHP_METHOD(SphinxClient, setFieldWeights)
 	/* reset num_weights, we'll reuse it count _real_ number of entries */
 	num_weights = 0;
 
-	ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(weights), item) {
-		zend_string *string_key;
+	ZEND_HASH_FOREACH_STR_KEY_VAL_IND(Z_ARRVAL_P(weights), string_key, item) {
 
-		if (zend_hash_get_current_key(Z_ARRVAL_P(weights), &string_key, &num_key) != HASH_KEY_IS_STRING) {
+		if (!string_key) {
 			/* if the key is not string.. well.. you're screwed */
 			break;
 		}
@@ -969,6 +966,8 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	int a = 0, i = 0, j = 0;
 	zend_bool mva = 0;
 	size_t index_len;
+	ulong id;
+	zend_string *str_id;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "saa|b", &index, &index_len, &attributes, &values, &mva) == FAILURE) {
 		return;
@@ -1018,13 +1017,11 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	if (!mva) {
 		vals = safe_emalloc(values_num * attrs_num, sizeof(sphinx_int64_t), 0);
 	}
-	ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(values), item) {
-		ulong id;
+	ZEND_HASH_FOREACH_KEY_VAL_IND(Z_ARRVAL_P(values), id, str_id, item) {
 		zval *attr_value;
-		int failed = 0, key_type;
+		int failed = 0;
 		double float_id = 0;
 		unsigned char id_type;
-		zend_string *str_id;
 
 		if (Z_TYPE_P(item) != IS_ARRAY) {
 			php_error_docref(NULL, E_WARNING, "value is not an array of attributes");
@@ -1036,12 +1033,10 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 			break;
 		}
 
-		key_type = zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &str_id, &id, NULL);
-
-		if (key_type == HASH_KEY_IS_LONG) {
+		if (!str_id) {
 			/* ok */
 			id_type = IS_LONG;
-		} else if (key_type == HASH_KEY_IS_STRING) {
+		} else {
 			id_type = is_numeric_string(str_id->val, str_id->len, (long *)&id, &float_id, 0);
 			if (id_type == IS_LONG || id_type == IS_DOUBLE) {
 				/* ok */
@@ -1049,9 +1044,6 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 				php_error_docref(NULL, E_WARNING, "document ID must be numeric");
 				break;
 			}
-		} else {
-			php_error_docref(NULL, E_WARNING, "document ID must be integer");
-			break;
 		}
 
 		if (id_type == IS_LONG) {
@@ -1196,11 +1188,10 @@ static PHP_METHOD(SphinxClient, buildExcerpts)
 
 	if (opts_array) {
 		zend_string *string_key;
-		ulong dummy;
 
 		/* nullify everything */
 		sphinx_init_excerpt_options(&opts);
-		ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(opts_array), item) {
+		ZEND_HASH_FOREACH_STR_KEY_VAL_IND(Z_ARRVAL_P(opts_array), string_key, item) {
 
 			switch (Z_TYPE_P(item)) {
 				case IS_STRING:
@@ -1212,7 +1203,7 @@ static PHP_METHOD(SphinxClient, buildExcerpts)
 					continue; /* ignore invalid options */
 			}
 
-			if (zend_hash_get_current_key_ex(Z_ARRVAL_P(opts_array), &string_key, &dummy, NULL) != HASH_KEY_IS_STRING) {
+			if (!string_key) {
 				continue; /* ignore invalid option names */
 			}
 
@@ -1626,6 +1617,8 @@ static PHP_METHOD(SphinxClient, setOverride)
 	int res;
 	sphinx_uint64_t *docids = NULL;
 	unsigned int *vals = NULL;
+	ulong id;
+	zend_string *str_id;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "sla", &attribute, &attribute_len, &type, &values) == FAILURE) {
 		return;
@@ -1648,24 +1641,19 @@ static PHP_METHOD(SphinxClient, setOverride)
 
 	docids = emalloc(sizeof(sphinx_uint64_t) * values_num);
 	vals = safe_emalloc(values_num, sizeof(unsigned int), 0);
-	ZEND_HASH_FOREACH_VAL_IND(Z_ARRVAL_P(values), attr_value) {
-		ulong id;
-		int key_type;
+	ZEND_HASH_FOREACH_KEY_VAL_IND(Z_ARRVAL_P(values), id, str_id, attr_value) {
 		double float_id = 0;
 		unsigned char id_type;
-		zend_string *str_id;
 
 		if (Z_TYPE_P(attr_value) != IS_LONG) {
 			php_error_docref(NULL, E_WARNING, "attribute value must be integer");
 			break;
 		}
 
-		key_type = zend_hash_get_current_key_ex(Z_ARRVAL_P(values), &str_id, &id, NULL);
-
-		if (key_type == HASH_KEY_IS_LONG) {
+		if (!str_id) {
 			/* ok */
 			id_type = IS_LONG;
-		} else if (key_type == HASH_KEY_IS_STRING) {
+		} else {
 			id_type = is_numeric_string(str_id->val, str_id->len, (long *)&id, &float_id, 0);
 			if (id_type == IS_LONG || id_type == IS_DOUBLE) {
 				/* ok */
@@ -1673,9 +1661,6 @@ static PHP_METHOD(SphinxClient, setOverride)
 				php_error_docref(NULL, E_WARNING, "document ID must be numeric");
 				break;
 			}
-		} else {
-			php_error_docref(NULL, E_WARNING, "document ID must be integer");
-			break;
 		}
 		vals[i] = (sphinx_uint64_t)Z_LVAL_P(attr_value);
 
