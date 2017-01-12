@@ -1535,7 +1535,7 @@ static PHP_METHOD(SphinxClient, escapeString)
 
 	new_str_len = target - new_str;
 	new_str = erealloc(new_str, new_str_len + 1);
-	RETURN_STRINGL(new_str, new_str_len);
+	RETVAL_STRINGL(new_str, new_str_len);
 	efree(new_str);
 }
 /* }}} */
