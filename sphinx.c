@@ -369,10 +369,7 @@ static PHP_METHOD(SphinxClient, setServer)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_server(c->sphinx, server, (int)port);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -391,10 +388,7 @@ static PHP_METHOD(SphinxClient, setLimits)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_limits(c->sphinx, (int)offset, (int)limit, (int)max_matches, (int)cutoff);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -413,10 +407,7 @@ static PHP_METHOD(SphinxClient, setMatchMode)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_match_mode(c->sphinx, mode);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -471,10 +462,7 @@ static PHP_METHOD(SphinxClient, setIndexWeights)
 	efree(index_names);
 	efree(index_weights);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -495,10 +483,7 @@ static PHP_METHOD(SphinxClient, setSelect)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_select(c->sphinx, clause);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 #endif
@@ -518,10 +503,7 @@ static PHP_METHOD(SphinxClient, setIDRange)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_set_id_range(c->sphinx, (sphinx_uint64_t)min, (sphinx_uint64_t)max);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -558,10 +540,7 @@ static PHP_METHOD(SphinxClient, setFilter)
 	res = sphinx_add_filter(c->sphinx, attribute, num_values, u_values, exclude ? 1 : 0);
 	efree(u_values);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -583,10 +562,7 @@ static PHP_METHOD(SphinxClient, setFilterString)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_add_filter_string(c->sphinx, attribute, value, exclude ? 1 : 0);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 #endif
@@ -610,10 +586,7 @@ static PHP_METHOD(SphinxClient, setFilterRange)
 
 	res = sphinx_add_filter_range(c->sphinx, attribute, min, max, exclude);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -636,10 +609,7 @@ static PHP_METHOD(SphinxClient, setFilterFloatRange)
 
 	res = sphinx_add_filter_float_range(c->sphinx, attribute, min, max, exclude);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -661,10 +631,7 @@ static PHP_METHOD(SphinxClient, setGeoAnchor)
 
 	res = sphinx_set_geoanchor(c->sphinx, attrlat, attrlong, latitude, longitude);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -695,10 +662,7 @@ static PHP_METHOD(SphinxClient, setGroupBy)
 
 	res = sphinx_set_groupby(c->sphinx, attribute, func, groupsort);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -719,10 +683,7 @@ static PHP_METHOD(SphinxClient, setGroupDistinct)
 
 	res = sphinx_set_groupby_distinct(c->sphinx, attribute);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -742,10 +703,7 @@ static PHP_METHOD(SphinxClient, setRetries)
 
 	res = sphinx_set_retries(c->sphinx, (int)count, (int)delay);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -765,10 +723,7 @@ static PHP_METHOD(SphinxClient, setMaxQueryTime)
 
 	res = sphinx_set_max_query_time(c->sphinx, (int)qtime);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -791,10 +746,7 @@ static PHP_METHOD(SphinxClient, setRankingMode)
 
 	res = sphinx_set_ranking_mode(c->sphinx, (int)ranker, rank_expr);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 #else
@@ -814,10 +766,7 @@ static PHP_METHOD(SphinxClient, setRankingMode)
 
 	res = sphinx_set_ranking_mode(c->sphinx, (int)ranker);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 #endif
@@ -874,10 +823,7 @@ static PHP_METHOD(SphinxClient, setFieldWeights)
 	efree(field_names);
 	efree(field_weights);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -899,10 +845,7 @@ static PHP_METHOD(SphinxClient, setSortMode)
 
 	res = sphinx_set_sort_mode(c->sphinx, (int)mode, sortby);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -922,10 +865,7 @@ static PHP_METHOD(SphinxClient, setConnectTimeout)
 
 	res = sphinx_set_connect_timeout(c->sphinx, timeout);
 
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -1551,10 +1491,7 @@ static PHP_METHOD(SphinxClient, open)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_open(c->sphinx);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -1568,10 +1505,7 @@ static PHP_METHOD(SphinxClient, close)
 	SPHINX_INITIALIZED(c)
 
 	res = sphinx_close(c->sphinx);
-	if (!res) {
-		RETURN_FALSE;
-	}
-	RETURN_TRUE;
+	RETURN_BOOL(res);
 }
 /* }}} */
 
@@ -1678,11 +1612,7 @@ static PHP_METHOD(SphinxClient, setOverride)
 	}
 
 	res = sphinx_add_override(c->sphinx, attribute, docids, values_num, vals);
-	if (!res) {
-		RETVAL_FALSE;
-	} else {
-		RETVAL_TRUE;
-	}
+	RETURN_BOOL(res);
 
 cleanup:
 	if (docids) {
