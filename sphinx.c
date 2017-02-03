@@ -293,11 +293,10 @@ static void php_sphinx_result_to_array(php_sphinx_client *c, sphinx_result *resu
 #else
 				char buf[128];
 				double float_id;
-				int buf_len;
 
 				float_id = (double)sphinx_get_id(result, i);
-				buf_len = slprintf(buf, sizeof(buf), "%.0f", float_id);
-				add_assoc_zval(tmp, buf, &tmp_element);
+				slprintf(buf, sizeof(buf), "%.0f", float_id);
+				add_assoc_zval(&tmp, buf, &tmp_element);
 #endif
 			}
 		}
@@ -966,7 +965,7 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 	int a = 0, i = 0, j = 0;
 	zend_bool mva = 0;
 	size_t index_len;
-	ulong id;
+	zend_long id;
 	zend_string *str_id;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "saa|b", &index, &index_len, &attributes, &values, &mva) == FAILURE) {
@@ -1037,7 +1036,7 @@ static PHP_METHOD(SphinxClient, updateAttributes)
 			/* ok */
 			id_type = IS_LONG;
 		} else {
-			id_type = is_numeric_string(str_id->val, str_id->len, (long *)&id, &float_id, 0);
+			id_type = is_numeric_string(str_id->val, str_id->len, &id, &float_id, 0);
 			if (id_type == IS_LONG || id_type == IS_DOUBLE) {
 				/* ok */
 			} else {
@@ -1617,7 +1616,7 @@ static PHP_METHOD(SphinxClient, setOverride)
 	int res;
 	sphinx_uint64_t *docids = NULL;
 	unsigned int *vals = NULL;
-	ulong id;
+	zend_long id;
 	zend_string *str_id;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "sla", &attribute, &attribute_len, &type, &values) == FAILURE) {
@@ -1654,7 +1653,7 @@ static PHP_METHOD(SphinxClient, setOverride)
 			/* ok */
 			id_type = IS_LONG;
 		} else {
-			id_type = is_numeric_string(str_id->val, str_id->len, (long *)&id, &float_id, 0);
+			id_type = is_numeric_string(str_id->val, str_id->len, &id, &float_id, 0);
 			if (id_type == IS_LONG || id_type == IS_DOUBLE) {
 				/* ok */
 			} else {
